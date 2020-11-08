@@ -29,7 +29,7 @@ namespace YY.TechJournalReaderAssistant
         private long _currentFileEventNumber;
         private StreamReader _stream;
         private readonly StringBuilder _eventSource;
-        private bool _logFileSourcePathIsDirectory;
+        private readonly bool _logFileSourcePathIsDirectory;
         private long _eventCount = -1;
 
         private RowData _currentRow;
@@ -96,47 +96,43 @@ namespace YY.TechJournalReaderAssistant
                     return Read();
                 }
 
-                // TODD:
-                //    bool newLine = true, textBlockOpen = false;
-                //    int countBracket = 0;
+                while (true)
+                {
+                    string sourceData = ReadSourceDataFromStream();
+                    if(sourceData != null)
+                        AddNewLineToSource(sourceData, true);
+                    
+                    if (LogParserTechJournal.ItsEndOfEvent(_stream, sourceData) || sourceData == null)
+                    {
+                        _currentFileEventNumber += 1;
+                        string preparedSourceData = _eventSource.ToString();
 
-                //    while (true)
-                //    {
-                //        string sourceData = ReadSourceDataFromStream();
-                //        if (sourceData == null)
-                //        {
-                //            NextFile();
-                //            output = Read();
-                //            break;
-                //        }
-                //        AddNewLineToSource(sourceData, newLine);
+                        RaiseBeforeRead(new BeforeReadEventArgs(preparedSourceData, _currentFileEventNumber));
 
-                //        if (LogParserLGF.ItsEndOfEvent(sourceData, ref countBracket, ref textBlockOpen))
-                //        {
-                //            _currentFileEventNumber += 1;
-                //            string preparedSourceData = _eventSource.ToString();
+                        if (sourceData == null)
+                        {
+                            NextFile();
+                            output = Read();
+                            break;
+                        }
 
-                //            RaiseBeforeRead(new BeforeReadEventArgs(preparedSourceData, _currentFileEventNumber));
-
-                //            try
-                //            {
-                //                RowData eventData = ReadRowData(preparedSourceData);
-                //                _currentRow = eventData;
-                //                RaiseAfterRead(new AfterReadEventArgs(_currentRow, _currentFileEventNumber));
-                //                output = true;
-                //                break;
-                //            }
-                //            catch (Exception ex)
-                //            {
-                //                RaiseOnError(new OnErrorEventArgs(ex, preparedSourceData, false));
-                //                _currentRow = null;
-                //                output = true;
-                //                break;
-                //            }
-                //        }
-
-                //        newLine = false;
-                //    }
+                        try
+                        {
+                            RowData eventData = ReadRowData(preparedSourceData);
+                            _currentRow = eventData;
+                            RaiseAfterRead(new AfterReadEventArgs(_currentRow, _currentFileEventNumber));
+                            output = true;
+                            break;
+                        }
+                        catch (Exception ex)
+                        {
+                            RaiseOnError(new OnErrorEventArgs(ex, preparedSourceData, false));
+                            _currentRow = null;
+                            output = true;
+                            break;
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -268,6 +264,27 @@ namespace YY.TechJournalReaderAssistant
 
         #region Private Memthods
 
+        private RowData ReadRowData(string sourceData)
+        {
+            RowData eventData = LogParserTechJournal.Parse(sourceData, CurrentFile);
+            return eventData;
+        }
+        private void AddNewLineToSource(string sourceData, bool newLine)
+        {
+            if (newLine)
+                _eventSource.Append(sourceData);
+            else
+            {
+                _eventSource.AppendLine();
+                _eventSource.Append(sourceData);
+            }
+        }
+        private string ReadSourceDataFromStream()
+        {
+            string sourceData = _stream.ReadLineWithoutNull();
+            
+            return sourceData;
+        }
         private void FindNearestBeginEventPosition(ref bool isCorrectBeginEvent, string currentFilePath, ref long newStreamPosition, int stepSize = 1)
         {
             int attemptToFoundBeginEventLine = 0;
@@ -288,7 +305,7 @@ namespace YY.TechJournalReaderAssistant
                     break;
                 }
 
-                isCorrectBeginEvent = false; // TODO: LogParserLGF.ItsBeginOfEvent(beginEventLine);
+                isCorrectBeginEvent = LogParserTechJournal.ItsBeginOfEvent(beginEventLine);
                 if (!isCorrectBeginEvent)
                 {
                     newStreamPosition -= stepSize;
@@ -350,8 +367,8 @@ namespace YY.TechJournalReaderAssistant
                     do
                     {
                         string logFileCurrentString = logFileStream.ReadLineWithoutNull();
-                        // TODO: if (LogParserLGF.ItsBeginOfEvent(logFileCurrentString))
-                        //    eventCount++;
+                        if (LogParserTechJournal.ItsBeginOfEvent(logFileCurrentString))
+                            eventCount++;
                     } while (!logFileStream.EndOfStream);
                 }
             }

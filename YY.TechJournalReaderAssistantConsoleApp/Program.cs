@@ -11,6 +11,8 @@ namespace YY.TechJournalReaderAssistantConsoleApp
         {
             TechJournalReader reader = TechJournalReader.CreateReader(args[0]);
 
+            Console.WriteLine($"Всего событий: {reader.Count()}");
+
             _eventNumber = 0;
             while (reader.Read())
             {
