@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Authors>Permitin Yuriy</Authors>
+    <Product>Technological journal's reader assistant</Product>
+    <Description>Library for reading 1C:Enterprise 8.x platform's technological journal files</Description>
+    <Version>1.0.0.1</Version>
+    <AssemblyVersion>1.0.0.1</AssemblyVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/YPermitin/YY.TechJournalReaderAssistant</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/YPermitin/YY.TechJournalReaderAssistant</RepositoryUrl>
+    <RepositoryType>GIT</RepositoryType>
+    <PackageTags>technological, journal, log, 1C, enterprise</PackageTags>
+    <PackageIcon>icon.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\Nuget\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
