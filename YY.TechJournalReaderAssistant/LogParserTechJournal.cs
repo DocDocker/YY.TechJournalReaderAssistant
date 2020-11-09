@@ -62,15 +62,92 @@ namespace YY.TechJournalReaderAssistant
 
             int indexEndOfDuration = bufferEventSource.IndexOf(',');
             string durationAsString = bufferEventSource.Substring(indexEndOfDate + 1, indexEndOfDuration - indexEndOfDate - 1);
-            dataRow.Duration = int.Parse(durationAsString);
-            dataRow.DurationSec = dataRow.Duration / (isFormat_8_3 ? 100000 : 10000);
-            
+            dataRow.Duration = int.Parse(durationAsString) * (isFormat_8_3 ? 10 : 100); ;
+
             bufferEventSource = bufferEventSource.Substring(indexEndOfDuration + 1, bufferEventSource.Length - indexEndOfDuration - 1);
             int indexEndOfEventName = bufferEventSource.IndexOf(',');
             dataRow.EventName = bufferEventSource.Substring(0, indexEndOfEventName);
 
-            // TODO:
-            // Реализовать разбор остальных свойств событий и их обработку
+            bufferEventSource = bufferEventSource.Substring(indexEndOfEventName + 1, bufferEventSource.Length - indexEndOfEventName - 1);
+            int indexEndOfLevel = bufferEventSource.IndexOf(',');
+            dataRow.Level = int.Parse(bufferEventSource.Substring(0, indexEndOfLevel));
+
+            bufferEventSource = bufferEventSource.Substring(indexEndOfLevel + 1, bufferEventSource.Length - indexEndOfLevel - 1);
+            int indexOfDelimeter = bufferEventSource.IndexOf("=");
+
+            bufferEventSource = bufferEventSource.Replace("''", "¦");
+            bufferEventSource = bufferEventSource.Replace(@"""""", "÷");
+
+            while (indexOfDelimeter > 0)
+            {
+                string paramName = bufferEventSource.Substring(0, indexOfDelimeter);
+                string valueAsString = string.Empty;
+
+                bufferEventSource = bufferEventSource.Substring(indexOfDelimeter + 1);
+                if (!string.IsNullOrEmpty(bufferEventSource))
+                {
+                    if (bufferEventSource.Substring(0, 1) == "'")
+                    {
+                        bufferEventSource = bufferEventSource.Substring(1);
+                        indexOfDelimeter = bufferEventSource.IndexOf("'");
+                        if (indexOfDelimeter > 0)
+                        {
+                            valueAsString = bufferEventSource.Substring(0, indexOfDelimeter).Trim();
+                            valueAsString = valueAsString.Replace("¦", "'");
+                        }
+                        if (bufferEventSource.Length > indexOfDelimeter + 1)
+                        {
+                            bufferEventSource = bufferEventSource.Substring(indexOfDelimeter + 1 + 1);
+                        }
+                        else
+                        {
+                            bufferEventSource = string.Empty;
+                        }
+                    } else if (bufferEventSource.Substring(0, 1) == "\"")
+                    {
+                        bufferEventSource = bufferEventSource.Substring(1);
+                        indexOfDelimeter = bufferEventSource.IndexOf("\"");
+                        if (indexOfDelimeter > 0)
+                        {
+                            valueAsString = bufferEventSource.Substring(0, indexOfDelimeter).Trim();
+                            valueAsString = valueAsString.Replace("÷", "\"\"");
+                        }
+                        if (bufferEventSource.Length > indexOfDelimeter + 1)
+                        {
+                            bufferEventSource = bufferEventSource.Substring(indexOfDelimeter + 1 + 1);
+                        }
+                        else
+                        {
+                            bufferEventSource = string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        indexOfDelimeter = bufferEventSource.IndexOf(",");
+                        if (indexOfDelimeter > 0)
+                        {
+                            valueAsString = bufferEventSource.Substring(0, indexOfDelimeter).Trim();
+                        }
+                        else
+                        {
+                            valueAsString = bufferEventSource;
+                        }
+
+                        if (bufferEventSource.Length > indexOfDelimeter)
+                        {
+                            bufferEventSource = bufferEventSource.Substring(indexOfDelimeter + 1);
+                        }
+                        else
+                        {
+                            bufferEventSource = string.Empty;
+                        }
+                    }
+                }
+
+                indexOfDelimeter = bufferEventSource.IndexOf("=");
+
+                dataRow.Properties.Add(paramName, valueAsString);
+            }
 
             return dataRow;
         }
