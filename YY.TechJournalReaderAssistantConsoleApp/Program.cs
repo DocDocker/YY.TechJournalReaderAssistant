@@ -9,15 +9,16 @@ namespace YY.TechJournalReaderAssistantConsoleApp
 
         static void Main(string[] args)
         {
-            TechJournalReader reader = TechJournalReader.CreateReader(args[0]);
-
-            Console.WriteLine($"Всего событий: {reader.Count()}");
-
-            _eventNumber = 0;
-            while (reader.Read())
+            TechJournalManager tjManager = new TechJournalManager(args[0]);
+            foreach (var tjDirectory in tjManager.Directories)
             {
-                _eventNumber += 1;
-                Console.WriteLine($"Прочитано событий: {_eventNumber}");
+                int eventNumber = 0;
+                TechJournalReader tjReader = TechJournalReader.CreateReader(tjDirectory.DirectoryData.FullName);
+                while (tjReader.Read())
+                {
+                    eventNumber += 1;
+                    Console.WriteLine($"[{tjDirectory.DirectoryData.Name}]: {eventNumber}");
+                }
             }
 
             Console.WriteLine($"{DateTime.Now}: Для выхода нажмите любую клавишу...");

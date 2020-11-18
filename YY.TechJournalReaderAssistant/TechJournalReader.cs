@@ -9,7 +9,7 @@ using YY.TechJournalReaderAssistant.Models;
 
 namespace YY.TechJournalReaderAssistant
 {
-    public sealed class TechJournalReader : ITechJournalReader, IDisposable
+    public class TechJournalReader : ITechJournalReader, IDisposable
     {
         #region Public Static Methods
 
@@ -70,7 +70,7 @@ namespace YY.TechJournalReaderAssistant
             else
             {
                 _logFileSourcePathIsDirectory = false;
-                _logFilesWithData = new[] { _logFilePath };
+                _logFilesWithData = new[] { logFilePath };
                 _logFilePath = _logFilesWithData[0];
                 _logFileDirectoryPath = new FileInfo(_logFilePath).Directory?.FullName;
             }
@@ -162,11 +162,8 @@ namespace YY.TechJournalReaderAssistant
                 foreach (string line in allLines)
                 {
                     currentLineNumber += 1;
-                    // TPDL: if (LogParserLGF.ItsBeginOfEvent(line))
-                    if(false)
-                    {
+                    if(LogParserTechJournal.ItsBeginOfEvent(line))
                         currentEventNumber += 1;
-                    }
 
                     if (currentEventNumber == eventNumber)
                     {

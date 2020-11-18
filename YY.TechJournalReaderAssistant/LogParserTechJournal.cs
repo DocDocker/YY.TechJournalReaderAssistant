@@ -8,7 +8,7 @@ using YY.TechJournalReaderAssistant.Models;
 
 namespace YY.TechJournalReaderAssistant
 {
-    public static class LogParserTechJournal
+    internal static class LogParserTechJournal
     {
         #region Public Static Methods
 
@@ -41,6 +41,7 @@ namespace YY.TechJournalReaderAssistant
 
             int indexEndOfDate = bufferEventSource.IndexOf('-');
             string periodAsString = bufferEventSource.Substring(0, indexEndOfDate);
+            int periodMilliseconds = int.Parse(periodAsString.Substring(6, 3));
 
             dataRow.Period = new DateTime(
                 2000 + int.Parse(dateFromFileAsString.Substring(0, 2)),
@@ -49,10 +50,7 @@ namespace YY.TechJournalReaderAssistant
                 int.Parse(dateFromFileAsString.Substring(6, 2)),
                 int.Parse(periodAsString.Substring(0, 2)),
                 int.Parse(periodAsString.Substring(3, 2))
-            );
-
-            int periodMilliseconds = int.Parse(periodAsString.Substring(6, 3));
-            dataRow.Period.AddMilliseconds(periodMilliseconds);
+            ).AddMilliseconds(periodMilliseconds);
 
             bool isFormat_8_3 = periodAsString.Length == 12;
             if (isFormat_8_3)
@@ -123,7 +121,7 @@ namespace YY.TechJournalReaderAssistant
                     }
                     else
                     {
-                        indexOfDelimeter = bufferEventSource.IndexOf(",");
+                        indexOfDelimeter = bufferEventSource.IndexOf(",", StringComparison.Ordinal);
                         if (indexOfDelimeter > 0)
                         {
                             valueAsString = bufferEventSource.Substring(0, indexOfDelimeter).Trim();
