@@ -44,10 +44,11 @@ namespace YY.TechJournalReaderAssistant
             {
                 if (_logFilesWithData.Length <= _indexCurrentFile)
                     return null;
-                else
-                    return _logFilesWithData[_indexCurrentFile];
+
+                return _logFilesWithData[_indexCurrentFile];
             }
         }
+        public RowData CurrentRow => _currentRow;
 
         #endregion
 
@@ -82,7 +83,7 @@ namespace YY.TechJournalReaderAssistant
 
         public bool Read()
         {
-            bool output = false;
+            bool output;
 
             try
             {
@@ -106,10 +107,11 @@ namespace YY.TechJournalReaderAssistant
                     {
                         _currentFileEventNumber += 1;
                         string preparedSourceData = _eventSource.ToString();
+                        _eventSource.Clear();
 
                         RaiseBeforeRead(new BeforeReadEventArgs(preparedSourceData, _currentFileEventNumber));
 
-                        if (sourceData == null)
+                        if (sourceData == null && preparedSourceData.Length == 0)
                         {
                             NextFile();
                             output = Read();

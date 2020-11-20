@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 using YY.TechJournalReaderAssistant.Helpers;
 using YY.TechJournalReaderAssistant.Models;
@@ -60,7 +58,7 @@ namespace YY.TechJournalReaderAssistant
 
             int indexEndOfDuration = bufferEventSource.IndexOf(',');
             string durationAsString = bufferEventSource.Substring(indexEndOfDate + 1, indexEndOfDuration - indexEndOfDate - 1);
-            dataRow.Duration = int.Parse(durationAsString) * (isFormat_8_3 ? 10 : 100); ;
+            dataRow.Duration = int.Parse(durationAsString) * (isFormat_8_3 ? 10 : 100);
 
             bufferEventSource = bufferEventSource.Substring(indexEndOfDuration + 1, bufferEventSource.Length - indexEndOfDuration - 1);
             int indexEndOfEventName = bufferEventSource.IndexOf(',');
@@ -71,7 +69,7 @@ namespace YY.TechJournalReaderAssistant
             dataRow.Level = int.Parse(bufferEventSource.Substring(0, indexEndOfLevel));
 
             bufferEventSource = bufferEventSource.Substring(indexEndOfLevel + 1, bufferEventSource.Length - indexEndOfLevel - 1);
-            int indexOfDelimeter = bufferEventSource.IndexOf("=");
+            int indexOfDelimeter = bufferEventSource.IndexOf("=", StringComparison.InvariantCulture);
 
             bufferEventSource = bufferEventSource.Replace("''", "¦");
             bufferEventSource = bufferEventSource.Replace(@"""""", "÷");
@@ -87,7 +85,7 @@ namespace YY.TechJournalReaderAssistant
                     if (bufferEventSource.Substring(0, 1) == "'")
                     {
                         bufferEventSource = bufferEventSource.Substring(1);
-                        indexOfDelimeter = bufferEventSource.IndexOf("'");
+                        indexOfDelimeter = bufferEventSource.IndexOf("'", StringComparison.InvariantCulture);
                         if (indexOfDelimeter > 0)
                         {
                             valueAsString = bufferEventSource.Substring(0, indexOfDelimeter).Trim();
@@ -104,7 +102,7 @@ namespace YY.TechJournalReaderAssistant
                     } else if (bufferEventSource.Substring(0, 1) == "\"")
                     {
                         bufferEventSource = bufferEventSource.Substring(1);
-                        indexOfDelimeter = bufferEventSource.IndexOf("\"");
+                        indexOfDelimeter = bufferEventSource.IndexOf("\"", StringComparison.InvariantCulture);
                         if (indexOfDelimeter > 0)
                         {
                             valueAsString = bufferEventSource.Substring(0, indexOfDelimeter).Trim();
@@ -142,7 +140,7 @@ namespace YY.TechJournalReaderAssistant
                     }
                 }
 
-                indexOfDelimeter = bufferEventSource.IndexOf("=");
+                indexOfDelimeter = bufferEventSource.IndexOf("=", StringComparison.InvariantCulture);
 
                 dataRow.Properties.Add(paramName, valueAsString);
             }

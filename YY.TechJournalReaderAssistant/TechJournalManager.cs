@@ -12,14 +12,6 @@ namespace YY.TechJournalReaderAssistant
         {
             Directories = new List<TechJournalDirectory>();
 
-            /* 
-             * Варианты:
-             * (+) 1. Передан путь на конкретный файл
-             * 2. Передан путь на каталог ТЖ процесса
-             * 3. Передан путь на каталог ТЖ с подканалогами по процессам
-             * 4. Передан путь на файл или каталог, не связанный с ТЖ
-             */
-
             if (File.GetAttributes(logFilePath).HasFlag(FileAttributes.Directory))
             {
                 DirectoryInfo logDirectoryInfo = new DirectoryInfo(logFilePath);
@@ -34,7 +26,7 @@ namespace YY.TechJournalReaderAssistant
                     foreach (var techJournalSubDirectory in techJournalSubDirectories)
                     {
                         DirectoryInfo techJournalSubDirectoryInfo = new DirectoryInfo(techJournalSubDirectory);
-                        if (TechJournalDirectory.ParseDataFromDirectoryName(logDirectoryInfo.Name)
+                        if (TechJournalDirectory.ParseDataFromDirectoryName(techJournalSubDirectoryInfo.Name)
                             && TechJournalDirectory.ContainsLogFiles(techJournalSubDirectoryInfo.FullName))
                         {
                             Directories.Add(new TechJournalDirectory(techJournalSubDirectoryInfo.FullName));
@@ -44,7 +36,14 @@ namespace YY.TechJournalReaderAssistant
             }
             else
             {
-                Directories.Add(new TechJournalDirectory(logFilePath));
+                FileInfo logFile = new FileInfo(logFilePath);
+                DirectoryInfo logDirectoryInfo = logFile.Directory;
+                if (logDirectoryInfo != null
+                    && TechJournalDirectory.ParseDataFromDirectoryName(logDirectoryInfo.Name)
+                    && TechJournalDirectory.ContainsLogFiles(logDirectoryInfo.FullName))
+                {
+                    Directories.Add(new TechJournalDirectory(logFilePath));
+                }
             }
         }
     }

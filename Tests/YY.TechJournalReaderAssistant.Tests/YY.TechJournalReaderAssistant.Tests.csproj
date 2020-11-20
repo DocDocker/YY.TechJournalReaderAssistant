@@ -17,4 +17,14 @@
     <ProjectReference Include="..\..\YY.TechJournalReaderAssistant\YY.TechJournalReaderAssistant.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TestData\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="TestData\TestData_ServerAndClusterLogs.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace YY.TechJournalReaderAssistant
+﻿namespace YY.TechJournalReaderAssistant
 {
     public interface ITechJournalReader
     {
