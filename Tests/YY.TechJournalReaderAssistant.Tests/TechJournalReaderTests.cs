@@ -36,8 +36,8 @@ namespace YY.TechJournalReaderAssistant.Tests
                 }
             }
 
-            DateTime minPeriod = allRows.Where(r => r != null).Min(r => r.Period);
-            DateTime maxPeriod = allRows.Where(r => r != null).Max(r => r.Period);
+            DateTime minPeriod = allRows.Min(r => r.Period);
+            DateTime maxPeriod = allRows.Max(r => r.Period);
 
             Assert.NotNull(lastRow);
             Assert.NotEqual(0, eventNumber);
