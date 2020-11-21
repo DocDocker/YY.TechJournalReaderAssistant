@@ -13,6 +13,7 @@
     <RepositoryType>GIT</RepositoryType>
     <PackageTags>technological, journal, log, 1C, enterprise</PackageTags>
     <PackageIcon>icon.png</PackageIcon>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
