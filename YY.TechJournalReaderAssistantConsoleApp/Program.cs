@@ -39,7 +39,8 @@ namespace YY.TechJournalReaderAssistantConsoleApp
 
                     while (tjReader.Read())
                     {
-                        // reader.CurrentRow - данные текущего события
+                        // tjReader.CurrentRow - данные текущего события
+                        // tjReader.CurrentRow.Properties - сырые данные события "как есть" без обработки в виде словаря Dictionary<string, string>
                         _eventNumber += 1;
                         _totalEventNumber += 1;
                     }
