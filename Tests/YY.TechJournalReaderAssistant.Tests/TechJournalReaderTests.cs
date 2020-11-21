@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Xunit;
 using System.IO.Compression;
+using System.Linq;
 using YY.TechJournalReaderAssistant.Models;
 
 namespace YY.TechJournalReaderAssistant.Tests
@@ -35,11 +36,15 @@ namespace YY.TechJournalReaderAssistant.Tests
                 }
             }
 
+            DateTime minPeriod = allRows.Where(r => r != null).Min(r => r.Period);
+            DateTime maxPeriod = allRows.Where(r => r != null).Max(r => r.Period);
+
             Assert.NotNull(lastRow);
             Assert.NotEqual(0, eventNumber);
             Assert.Equal(3113, eventNumber);
             Assert.Equal(lastRow.Properties["Txt"], "1C:Enterprise 8.3 (x86-64) (8.3.17.1496) Working Process (debug) terminated.");
-            Assert.Equal(new DateTime(2020,8,18, 15,22,26).AddMilliseconds(837), allRows[0].Period);
+            Assert.Equal(new DateTime(2020, 8, 18, 15, 22, 06).AddMilliseconds(356), minPeriod);
+            Assert.Equal(new DateTime(2020, 8, 18, 16, 02, 34).AddMilliseconds(817), maxPeriod);
         }
     }
 }
