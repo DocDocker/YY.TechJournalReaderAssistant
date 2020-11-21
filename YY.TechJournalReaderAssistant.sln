@@ -23,6 +23,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{11E276EC
 		Nuget\icon.png = Nuget\icon.png
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{67DDACBF-1C91-4AA5-9133-BC6FB2ACC76B}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\deploy.sh = Scripts\deploy.sh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +53,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{D79399CD-DBA6-4CB1-8BD1-D32F28ADDE9C} = {BACA524F-11E4-4932-A19F-62EB1D15EFBC}
 		{11E276EC-CC44-4221-84D8-9B90190C0323} = {FFC71FD2-2817-4913-808A-82F6F0CE18E0}
+		{67DDACBF-1C91-4AA5-9133-BC6FB2ACC76B} = {FFC71FD2-2817-4913-808A-82F6F0CE18E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {035380E7-626E-43B7-A8A9-EE3F29295F21}
