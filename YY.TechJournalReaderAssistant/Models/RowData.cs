@@ -1,10 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using YY.TechJournalReaderAssistant.Helpers;
 
 namespace YY.TechJournalReaderAssistant.Models
 {
     public class RowData
     {
+        private static readonly Regex _replaceTempTableName = new Regex(@"#tt[\d]+");
+        private static readonly Regex _replaceParameterName = new Regex(@"@P[\d]+");
+
+        private static string _sqlQueryOnly;
+        private static string _sqlQueryParametersOnly;
+        private static List<string> _sqlQueryTableList;
+
         public RowData()
         {
             Properties = new Dictionary<string, string>();
@@ -122,6 +131,51 @@ namespace YY.TechJournalReaderAssistant.Models
             {
                 if (Properties.ContainsKey("Sql"))
                     return Properties["Sql"];
+
+                return null;
+            }
+        }
+        public string SQLQueryOnly
+        {
+            get
+            {
+                if (_sqlQueryOnly == null && Properties.ContainsKey("Sql"))
+                {
+                    string bufferSql = (string)Properties["Sql"].Clone();
+                    int endOfQuery = bufferSql.IndexOf("p_0", StringComparison.Ordinal);
+                    _sqlQueryOnly = bufferSql.Substring(0, endOfQuery);
+                }
+
+                return _sqlQueryOnly;
+            }
+        }
+        public string SQLQueryParametersOnly
+        {
+            get
+            {
+                if (_sqlQueryParametersOnly == null && Properties.ContainsKey("Sql"))
+                {
+                    string bufferSql = (string)Properties["Sql"].Clone();
+                    int endOfQuery = bufferSql.IndexOf("p_0", StringComparison.Ordinal);
+                    int lengthOfParams = bufferSql.Length - endOfQuery;
+                    _sqlQueryParametersOnly = bufferSql.Substring(endOfQuery, lengthOfParams);
+                }
+
+                return _sqlQueryParametersOnly;
+            }
+        }
+        public string SQLQueryHash
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(SQLQueryOnly))
+                {
+                    string bufferSql = (string)SQLQueryOnly.Clone();
+                    _replaceParameterName.Replace(bufferSql, bufferSql);
+                    _replaceTempTableName.Replace(bufferSql, bufferSql);
+                    bufferSql = bufferSql.Replace(" ", "");
+                    return bufferSql.CreateMD5();
+                }
 
                 return null;
             }
