@@ -1,37 +1,94 @@
 ﻿using System;
 using System.Collections.Generic;
 using YY.TechJournalReaderAssistant;
+using YY.TechJournalReaderAssistant.EventArguments;
 using YY.TechJournalReaderAssistant.Models;
 
 namespace YY.TechJournalReaderAssistantConsoleApp
 {
-    class Program
+    static class Program
     {
+        private static int _totalEventNumber;
         private static int _eventNumber;
+        private static DateTime _lastPeriodEvent = DateTime.MinValue;
+        private static TechJournalDirectory _lastLogDirectory;
 
         static void Main(string[] args)
         {
-            List<RowData> allRows = new List<RowData>();
-            RowData lastRow = null;
+            if (args.Length == 0)
+                return;
+            
+            string dataDirectoryPath = args[0];
+            Console.WriteLine($"{DateTime.Now}: Инициализация чтения логов \"{dataDirectoryPath}\"...");
+            Console.WriteLine();
 
-            TechJournalManager tjManager = new TechJournalManager(args[0]);
+            TechJournalManager tjManager = new TechJournalManager(dataDirectoryPath);
             foreach (var tjDirectory in tjManager.Directories)
             {
-                TechJournalReader tjReader = TechJournalReader.CreateReader(tjDirectory.DirectoryData.FullName);
-                while (tjReader.Read())
+                _lastLogDirectory = tjDirectory;
+
+                using (TechJournalReader tjReader = TechJournalReader.CreateReader(tjDirectory.DirectoryData.FullName))
                 {
-                    _eventNumber += 1;
-                    lastRow = tjReader.CurrentRow;
-                    allRows.Add(tjReader.CurrentRow);
-                    Console.WriteLine($"[{tjDirectory.DirectoryData.Name}]: {_eventNumber}");
+                    tjReader.AfterReadEvent += Reader_AfterReadEvent;
+                    tjReader.AfterReadFile += Reader_AfterReadFile;
+                    tjReader.BeforeReadEvent += Reader_BeforeReadEvent;
+                    tjReader.BeforeReadFile += Reader_BeforeReadFile;
+                    tjReader.OnErrorEvent += Reader_OnErrorEvent;
+
+                    Console.WriteLine($"{DateTime.Now}: [{_lastLogDirectory}] Всего событий к обработке: ({tjReader.Count()})...");
+
+                    while (tjReader.Read())
+                    {
+                        // reader.CurrentRow - данные текущего события
+                        _eventNumber += 1;
+                        _totalEventNumber += 1;
+                    }
                 }
             }
 
-            Console.WriteLine($"Total event count: {_eventNumber}");
-            if (allRows.Count > 0) Console.WriteLine($"First period: {allRows[0].Period}");
-            if (lastRow != null) Console.WriteLine($"Last period: {lastRow.Period}");
+            Console.WriteLine($"{DateTime.Now}: Всего событий прочитано: ({_totalEventNumber})...");
             Console.WriteLine($"{DateTime.Now}: Для выхода нажмите любую клавишу...");
             Console.ReadKey();
         }
+
+        #region Events
+
+        private static void Reader_BeforeReadFile(TechJournalReader sender, BeforeReadFileEventArgs args)
+        {
+            _eventNumber = 0;
+            Console.WriteLine($"{DateTime.Now}: [{_lastLogDirectory}] Начало чтения файла \"{args.FileName}\"");
+            Console.WriteLine($"{DateTime.Now}: [{_lastLogDirectory}] {_eventNumber}");
+            Console.WriteLine($"{DateTime.Now}: [{_lastLogDirectory}] {_lastPeriodEvent}");
+        }
+
+        private static void Reader_AfterReadFile(TechJournalReader sender, AfterReadFileEventArgs args)
+        {
+            Console.WriteLine($"{DateTime.Now}: [{_lastLogDirectory}] Окончание чтения файла \"{args.FileName}\"");
+            Console.WriteLine();
+        }
+
+        private static void Reader_BeforeReadEvent(TechJournalReader sender, BeforeReadEventArgs args)
+        {
+            Console.SetCursorPosition(0, Console.CursorTop - 2);
+            Console.WriteLine($"{DateTime.Now}: [{_lastLogDirectory}] (+){_eventNumber}");
+            Console.WriteLine($"{DateTime.Now}: [{_lastLogDirectory}] {_lastPeriodEvent}");
+        }
+
+        private static void Reader_AfterReadEvent(TechJournalReader sender, AfterReadEventArgs args)
+        {
+            if (args.RowData != null)
+                _lastPeriodEvent = args.RowData.Period;
+
+            Console.SetCursorPosition(0, Console.CursorTop - 2);
+            Console.WriteLine($"{DateTime.Now}: [{_lastLogDirectory}] [+]{_eventNumber}");
+            Console.WriteLine($"{DateTime.Now}: [{_lastLogDirectory}] {_lastPeriodEvent}");
+        }
+
+        private static void Reader_OnErrorEvent(TechJournalReader sender, OnErrorEventArgs args)
+        {
+            Console.WriteLine($"{DateTime.Now}: [{_lastLogDirectory}] Ошибка чтения логов \"{args.Exception}\"");
+        }
+
+        #endregion
     }
 }
