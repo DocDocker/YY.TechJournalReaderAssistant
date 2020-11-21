@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Xunit;
 using System.IO.Compression;
@@ -39,6 +39,7 @@ namespace YY.TechJournalReaderAssistant.Tests
             Assert.NotEqual(0, eventNumber);
             Assert.Equal(3113, eventNumber);
             Assert.Equal(lastRow.Properties["Txt"], "1C:Enterprise 8.3 (x86-64) (8.3.17.1496) Working Process (debug) terminated.");
+            Assert.Equal(new DateTime(2020,8,18, 15,22,26).AddMilliseconds(837), allRows[0].Period);
         }
     }
 }

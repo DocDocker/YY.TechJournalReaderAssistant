@@ -28,6 +28,7 @@ namespace YY.TechJournalReaderAssistantConsoleApp
             }
 
             Console.WriteLine($"Total event count: {_eventNumber}");
+            if (allRows.Count > 0) Console.WriteLine($"First period: {allRows[0].Period}");
             if (lastRow != null) Console.WriteLine($"Last period: {lastRow.Period}");
             Console.WriteLine($"{DateTime.Now}: Для выхода нажмите любую клавишу...");
             Console.ReadKey();

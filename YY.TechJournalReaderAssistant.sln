@@ -7,15 +7,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YY.TechJournalReaderAssista
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FFC71FD2-2817-4913-808A-82F6F0CE18E0}"
 	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnet-core.yml = .github\workflows\dotnet-core.yml
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BACA524F-11E4-4932-A19F-62EB1D15EFBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YY.TechJournalReaderAssistantConsoleApp", "YY.TechJournalReaderAssistantConsoleApp\YY.TechJournalReaderAssistantConsoleApp.csproj", "{79D710C6-CA74-4FAD-803F-A153AD44845C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YY.TechJournalReaderAssistantConsoleApp", "YY.TechJournalReaderAssistantConsoleApp\YY.TechJournalReaderAssistantConsoleApp.csproj", "{79D710C6-CA74-4FAD-803F-A153AD44845C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YY.TechJournalReaderAssistant.Tests", "Tests\YY.TechJournalReaderAssistant.Tests\YY.TechJournalReaderAssistant.Tests.csproj", "{D79399CD-DBA6-4CB1-8BD1-D32F28ADDE9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YY.TechJournalReaderAssistant.Tests", "Tests\YY.TechJournalReaderAssistant.Tests\YY.TechJournalReaderAssistant.Tests.csproj", "{D79399CD-DBA6-4CB1-8BD1-D32F28ADDE9C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{11E276EC-CC44-4221-84D8-9B90190C0323}"
 	ProjectSection(SolutionItems) = preProject
