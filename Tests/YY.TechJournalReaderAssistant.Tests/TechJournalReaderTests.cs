@@ -14,8 +14,8 @@ namespace YY.TechJournalReaderAssistant.Tests
         {
             string unitTestDirectory = Directory.GetCurrentDirectory();
 
-            string logArchive = Path.Combine(unitTestDirectory, "TestData\\TestData_ServerAndClusterLogs.zip");
-            string logDataPath = Path.Combine(unitTestDirectory, "TestData\\TestData_ServerAndClusterLogs");
+            string logArchive = Path.Combine(unitTestDirectory, "TestData", "TestData_ServerAndClusterLogs.zip");
+            string logDataPath = Path.Combine(unitTestDirectory, "TestData", "TestData_ServerAndClusterLogs");
             if(Directory.Exists(logDataPath)) Directory.Delete(logDataPath, true);
             ZipFile.ExtractToDirectory(logArchive, logDataPath);
 
