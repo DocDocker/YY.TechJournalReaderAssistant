@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using YY.TechJournalReaderAssistant;
 using YY.TechJournalReaderAssistant.EventArguments;
